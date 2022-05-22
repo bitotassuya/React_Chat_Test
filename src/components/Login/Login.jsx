@@ -1,34 +1,62 @@
-import { VStack, ButtonGroup, FormControl, FormLabel, Button, FormErrorMessage, Input } from "@chakra-ui/react";
+import { Button, ButtonGroup, Heading, VStack } from "@chakra-ui/react";
+import { Form, Formik } from "formik";
+import { useNavigate } from "react-router";
+import * as Yup from "yup";
+import TextField from "./TextField";
 
-const Login = () => { 
+const Login = () => {
+  const navigate = useNavigate();
     return (
-        <VStack
-            as="form"
-            w={{ base: "90", md: "500px" }}
-            m="auto"
-            justify="center"
-            h="100vh">
-        
-        <FormControl>
-            <FormLabel>User Name</FormLabel>
-            <Input name="username" placeholder="Enter username" autoComplete="off" />
-            <FormErrorMessage>Invalid username</FormErrorMessage>
+      /* use Formik form and define condition of login  */
+    <Formik
+      initialValues={{ username: "", password: "" }}
+      validationSchema={Yup.object({
+        username: Yup.string()
+          .required("กรุณาใส่ Username!")
+          .min(6, "Username สั้นเกินไป!")
+          .max(28, "Username ยาวเกินไป!"),
+        password: Yup.string()
+          .required("กรุณาใส่Password!")
+          .min(6, "Password สั้นเกินไป!")
+          .max(28, "Password ยาวเกินไป!"),
+      })}
+      onSubmit={(values, actions) => {
+        alert(JSON.stringify(values, null, 2));
+        actions.resetForm();
+      }}
+    >
+      <VStack
+        as={Form}
+        w={{ base: "90%", md: "500px" }}
+        m="auto"
+        justify="center"
+        h="100vh"
+        spacing="1rem"
+      >
+        <Heading>Log In</Heading>
+        <TextField
+          name="username"
+          placeholder="Enter username"
+          autoComplete="off"
+          label="Username"
+        />
 
-            </FormControl>
-            
-        <FormControl>
-            <FormLabel>PassWord</FormLabel>
-            <Input name="password" placeholder="Enter Password" autoComplete="off" />
-            <FormErrorMessage>Invalid Password</FormErrorMessage>
+        <TextField
+          name="password"
+          placeholder="Enter password"
+          autoComplete="off"
+          label="Password"
+        />
 
-        </FormControl>
-
-        <ButtonGroup>
-            <Button colorScheme="teal" type="submit">Login</Button>
-                <Button>Login</Button>
-                <Button>Create Acoount</Button>
+        <ButtonGroup pt="1rem">
+          <Button colorScheme="teal" type="submit">
+            Log In
+          </Button>
+          <Button onClick={() => navigate("/register")}>Create Account</Button>
         </ButtonGroup>
-    </VStack>
-    );
+      </VStack>
+    </Formik>
+  );
 };
+
 export default Login;
